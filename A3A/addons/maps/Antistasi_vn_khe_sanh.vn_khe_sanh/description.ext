@@ -1,0 +1,29 @@
+#include "..\missionDescription\master.hpp"
+
+OnLoadName = $STR_antistasi_mission_info_khesanh_mapname_short_text;
+OnLoadMission = $STR_antistasi_mission_info_khesanh_blurb_text;
+briefingName = $STR_antistasi_mission_info_khesanh_mapname_text;
+overviewText = $STR_antistasi_mission_info_Altis_description_text;
+loadScreen = LOAD_SCREEN_IMAGE;
+overviewPicture = OVERVIEW_IMAGE;
+
+class CfgDiscordRichPresence 
+{
+    applicationID="1270380812684230746";
+    defaultDetails="In campaign";
+    defaultState="Khe Sahn";
+    defaultLargeImageKey="khe";
+    defaultLargeImageText="Rebelling in Khe Sahn";
+    defaultSmallImageKey="au-logo";
+    defaultSmallImageText="Antistasi Ultimate";
+    useTimeElapsed=1;
+};
+//DLC: https://store.steampowered.com/app/1227700/Arma_3_Creator_DLC_SOG_Prairie_Fire/?curator_clanid=2799889
+class CfgNotifications
+{
+    #include "..\missionDescription\CfgNotificationsContents.hpp"
+};
+
+class CfgDebriefing {
+    #include "..\missionDescription\CfgDebriefingContents.hpp"
+};

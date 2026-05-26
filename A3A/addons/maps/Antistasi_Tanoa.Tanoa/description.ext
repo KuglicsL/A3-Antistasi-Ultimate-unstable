@@ -1,0 +1,29 @@
+#include "..\missionDescription\master.hpp"
+
+OnLoadName = $STR_antistasi_mission_info_tanoa_mapname_short_text;
+OnLoadMission = $STR_antistasi_mission_info_tanoa_blurb_text;
+briefingName = $STR_antistasi_mission_info_tanoa_mapname_text;
+overviewText = $STR_antistasi_mission_info_Altis_description_text;
+loadScreen = LOAD_SCREEN_IMAGE;
+overviewPicture = OVERVIEW_IMAGE;
+
+class CfgDiscordRichPresence 
+{
+    applicationID="1270380812684230746";
+    defaultDetails="In campaign";
+    defaultState="Tanoa";
+    defaultLargeImageKey="tanoa";
+    defaultLargeImageText="Rebelling in Tanoa";
+    defaultSmallImageKey="au-logo";
+    defaultSmallImageText="Antistasi Ultimate";
+    useTimeElapsed=1;
+};
+//DLC: https://store.steampowered.com/app/395180/Arma_3_Apex/?snr=1_16_16_creator_curatorfeatureddiscount&curator_clanid=2799889
+class CfgNotifications
+{
+    #include "..\missionDescription\CfgNotificationsContents.hpp"
+};
+
+class CfgDebriefing {
+    #include "..\missionDescription\CfgDebriefingContents.hpp"
+};

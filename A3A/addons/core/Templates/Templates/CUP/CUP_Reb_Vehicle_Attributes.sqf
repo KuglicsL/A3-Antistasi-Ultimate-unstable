@@ -1,0 +1,36 @@
+["attributesVehicles", [
+    // light armed stuff
+    ["CUP_I_Datsun_PK", ["rebCost", 600]],
+    ["Flex_CUP_LUF_Datsun_PK", ["rebCost", 600]],
+	
+    // up-armored vehicles
+    ["Flex_CUP_LUF_BTR40", ["rebCost", 1000]],
+    ["Flex_CUP_LUF_BTR40_MG", ["rebCost", 1500]],
+    ["Flex_CUP_LUF_Hilux_armored_unarmed", ["rebCost", 1000]],
+    ["Flex_CUP_LUF_Hilux_armored_DSHKM", ["rebCost", 2000]],
+    ["Flex_CUP_LUF_Hilux_armored_M2", ["rebCost", 2000]],
+    ["Flex_CUP_LUF_Hilux_armored_zu23", ["rebCost", 3000]],
+    ["Flex_CUP_FIA_Hilux_armored_unarmed", ["rebCost", 1000]],
+    ["Flex_CUP_FIA_Hilux_armored_M2", ["rebCost", 2000]],
+    ["Flex_CUP_FIA_Hilux_armored_zu23", ["rebCost", 3000]],
+
+    // heavy armed stuff
+    ["CUP_I_Hilux_UB32_NAPA", ["rebCost", 6000]],
+    ["Flex_CUP_FIA_Hilux_UB32", ["rebCost", 6000]],
+    ["Flex_CUP_LUF_Hilux_UB32", ["rebCost", 6000]],
+    ["Flex_CUP_LUF_Hilux_armored_UB32", ["rebCost", 8000]],
+    ["CUP_I_Hilux_MLRS_NAPA", ["rebCost", 12000]],
+    ["CUP_I_Hilux_btr60_NAPA", ["rebCost", 6000]],
+    ["a3u_cup_m1025_m240_olive", ["rebCost", 4500]],
+    ["a3u_cup_m1025_sov_m2_olive", ["rebCost", 9000]],
+
+    // civ helicopters
+    ["CUP_I_Merlin_HC3_PMC_Lux_3C", ["rebCost", 8000]],
+    
+    // jets
+    ["CUP_B_Su25_Dyn_CDF", ["rebCost", 20000]],
+    // WM vehicles
+    ["a3u_cup_lr_mg_wl", ["rebCost", 1000]],
+    ["a3u_cup_m1025_m240_olive", ["rebCost", 2000]],
+    ["a3u_cup_m1025_sov_m2_olive", ["rebCost", 2500]]
+]] call _fnc_saveToTemplate;
