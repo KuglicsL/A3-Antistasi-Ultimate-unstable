@@ -58,8 +58,8 @@ private _hrMax = "";
 private _hrLimit = "";
 
 if (limitHR != 0) then {
-	_hrLimit = (((tierWar * 100) * (limitHR / 100)) + 100);
-	_hrMax = format[" / %1",_hrLimit]; 
+	_hrLimit = ((tierWar * 2) + 10);
+	_hrMax = format[" / %1",_hrLimit];
 };
 
 _aggrString = _aggrString + _rivalsActivityTxt;

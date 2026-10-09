@@ -84,8 +84,14 @@ while {true} do {
 		if (sidesX getVariable [_city,sideUnknown] == Occupants) then
 		{
 			_resAddCity = _resAddCity / 2;
-			_hrAddCity = _hrAddCity / 2;
 		};
+
+		if (sidesX getVariable [_city,sideUnknown] == teamPlayer) then {
+			_hrAddCity = 0.25;
+		} else {
+			_hrAddCity = 0;	//no HR from enemy controlled or destroyed cities
+		};
+
 		if (_radioTowerSide != teamPlayer) then { _resAddCity = _resAddCity / 2 };
 
 		_resAdd = _resAdd + _resAddCity;
@@ -141,8 +147,7 @@ while {true} do {
 	_resAdd = round _resAdd;
 	if (!finite _resAdd) then { _resAdd = 25000; }; //either number is too large or something is broken
 	if (!finite _hrAdd) then { _hrAdd = 30; };
-	server setVariable ["hr", _hrAdd + (server getVariable ["hr", 0]), true];
-	server setVariable ["resourcesFIA", _resAdd + (server getVariable ["resourcesFIA", 0]), true];
+	[_hrAdd,_resAdd] remoteExec ["A3A_fnc_resourcesFIA",2];
 
 	private _rebAirportsQuantity = {sidesX getVariable [_x,sideUnknown] == teamPlayer} count airportsX;
 	bombRuns = bombRuns + 0.25 * _rebAirportsQuantity;

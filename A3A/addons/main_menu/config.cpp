@@ -157,7 +157,7 @@ class RscTitles
 	{
 		idd=-1;
 		movingEnable=0;
-		duration=3;
+		duration=6;
 		fadein=1;
 		fadeout=1;
 		name="-";
@@ -167,7 +167,7 @@ class RscTitles
 		};
 		class Picture: RscPicture
 		{
-			text = QPATHTOFOLDER(data\backgrounds\LoadingScreen\AUC_Updates_co.jpg);
+			text = QPATHTOFOLDER(data\backgrounds\LoadingScreen\Goose_fly_high.jpg);
 			colorText[]={1,1,1,1};
 			x="safezoneX";
 			y="safezoneY";

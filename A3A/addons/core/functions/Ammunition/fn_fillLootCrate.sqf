@@ -48,7 +48,7 @@ if (typeOf _crate in FactionGet(all,"vehiclesAmmoTrucks")) then {
 private _quantityScalingFactor = if (minWeaps < 0) then {1} else {
 	private _playerCount = if(!isNil "spoofedPlayerCount") then {spoofedPlayerCount} else {A3A_activePlayerCount};
 	//Scale it down to a 50% loot rate at 20 players.
-	1 / (1 + _playerCount / 20);
+	1 / (1 + ((_playerCount-1)/19));
 };
 
 
@@ -153,57 +153,60 @@ private _fnc_pickWeapon = {
 	[_category select 0, _category select 1] call _fnc_pickRandomFromAProbablyNotInB;
 };
 
-//Pick the amount of X to spawn. Use gaussian distribution, unless we're in CHAOS MODE.
+//Pick the amount of X to spawn. Use gaussian distribution.
 private _fnc_pickAmount = {
 	params ["_max"];
 	//Never have a greater than 50% chance of getting nothing
 	if (_max * _quantityScalingFactor < 1) then {
-		round random 1
+		round random 1;
 	} else {
-		round (random [1, floor (_max/2), _max] * _quantityScalingFactor)
+		round (random [0, _max/2, _max] * _quantityScalingFactor);
 	}
 };
 
 private _fnc_pickNumberOfTypes = {
 	params ["_max"];
-	floor random [1, floor (_max/2), _max];
+	round random [0, _max/2, _max];
 };
 
 //Weapons Loot
 if (_crateWepTypeMax != 0) then {
     Debug("Generating Weapons");
-	for "_i" from 0 to (_crateWepTypeMax call _fnc_pickNumberOfTypes) do {
-		private _loot = call _fnc_pickWeapon;
+	private _crateWepTypes = _crateWepTypeMax call _fnc_pickNumberOfTypes;
+	if (_crateWepTypes > 0) then {
+		for "_i" from 0 to (_crateWepTypes-1) do {
+			private _loot = call _fnc_pickWeapon;
 
-		if (isNil "_loot") then {
-            Debug("No Weapons Left in Loot List Or Pick Random Failed");
-		}
-		else
-		{
-			_amount = if (isNil "_crateWepNum") then {crateWepNumMax call _fnc_pickAmount;} else {_crateWepNum};
-			_crate addWeaponWithAttachmentsCargoGlobal [[ _loot, "", "", "", [], [], ""], _amount];
-            Verbose_2("Adding %1 weapons of type %2", _amount, _loot);
+			if (isNil "_loot") then {
+				Debug("No Weapons Left in Loot List Or Pick Random Failed");
+			}
+			else
+			{
+				_amount = if (isNil "_crateWepNum") then {crateWepNumMax call _fnc_pickAmount;} else {_crateWepNum};
+				_crate addWeaponWithAttachmentsCargoGlobal [[ _loot, "", "", "", [], [], ""], _amount];
+				Verbose_2("Adding %1 weapons of type %2", _amount, _loot);
 
-			private _magazines = [_loot, A3U_forbiddenItems] call A3A_fnc_compatibleMagazinesWithExceptions;
-			if (count _magazines < 1) exitWith {};
-			if (_loot in allShotguns) then { _magazines = [_magazines select 0] };		// prevent doomsday
-
-			for "_i" from 0 to _amount do {
-				_magazine = selectRandom _magazines;
-				_magAmount = if ((getText (configFile >> "CfgMagazines" >> _magazine >> "ammo") isKindOf "MissileBase")) then {
-					floor random 3;
-				} else {
-					floor random [1,6,1]
+				private _magazines = [_loot, A3U_forbiddenItems] call A3A_fnc_compatibleMagazinesWithExceptions;
+				if (count _magazines < 1) exitWith {};
+				if (_loot in allShotguns) then { _magazines = [_magazines select 0] };		// prevent doomsday
+				//if _amount equals 0, it will not loop at all
+				for "_i" from 0 to (_amount-1) do {
+					_magazine = selectRandom _magazines;
+					_magAmount = if ((getText (configFile >> "CfgMagazines" >> _magazine >> "ammo") isKindOf "MissileBase")) then {
+						floor random 3;
+					} else {
+						floor random [1,6,1]
+					};
+					Verbose_3("Spawning %1 magazines of %2 for %3", _magAmount, _magazine, _loot);
+					_crate addMagazineCargoGlobal [_magazine, _magAmount];
 				};
-                Verbose_3("Spawning %1 magazines of %2 for %3", _magAmount, _magazine, _loot);
-				_crate addMagazineCargoGlobal [_magazine, _magAmount];
 			};
 		};
 	};
 };
 
 //Items Loot
-if (_crateItemTypeMax != 0) then {
+if (_crateItemTypeMax != 0 && crateItemNumMax != 0) then {
     Debug("Generating Items");
 
 	//exclude NVGs until war level 4
@@ -217,8 +220,8 @@ if (_crateItemTypeMax != 0) then {
 			lootItem - unlockedItems, 1
 		]
 	] select (tierWar < 3);
-
-	for "_i" from 0 to floor random _crateItemTypeMax do {
+	//(floor random typemax+1) goes from 0 to typemax, but from 0 to 0 actually executes once so -1 at the end
+	for "_i" from 0 to ((floor (random (_crateItemTypeMax+1)))-1) do {	
 		private _lootList = selectRandomWeighted _itemLootLists;
 		if (_lootList isEqualTo []) then { continue };
 		private _loot = selectRandom _lootList;
@@ -228,8 +231,8 @@ if (_crateItemTypeMax != 0) then {
 	};
 };
 //Ammo Loot
-if (_crateAmmoTypeMax != 0) then {
-	for "_i" from 0 to floor random _crateAmmoTypeMax do {
+if (_crateAmmoTypeMax != 0 && crateAmmoNumMax != 0) then {
+	for "_i" from 0 to ((floor (random (_crateAmmoTypeMax+1)))-1) do {
 		_available = (lootMagazine - _unlocks - itemCargo _crate);
 		_available = _available - A3U_forbiddenItems;
 		_loot = selectRandom _available;
@@ -244,8 +247,8 @@ if (_crateAmmoTypeMax != 0) then {
 	};
 };
 //Explosives Loot
-if (_crateExplosiveTypeMax != 0) then {
-	for "_i" from 0 to floor random _crateExplosiveTypeMax do {
+if (_crateExplosiveTypeMax != 0 && crateExplosiveNumMax != 0) then {
+	for "_i" from 0 to ((floor (random (_crateExplosiveTypeMax+1)))-1)  do {
 		_available = (lootExplosive - _unlocks - itemCargo _crate);
 		_available = _available - A3U_forbiddenItems;
 		_loot = selectRandom _available;
@@ -260,8 +263,8 @@ if (_crateExplosiveTypeMax != 0) then {
 	};
 };
 //Attachments Loot
-if (_crateAttachmentTypeMax != 0) then {
-	for "_i" from 0 to (_crateAttachmentTypeMax call _fnc_pickNumberOfTypes) do {
+if (_crateAttachmentTypeMax != 0 && crateAttachmentNumMax != 0) then {
+	for "_i" from 0 to ((floor (random (_crateAttachmentTypeMax+1)))-1) do {
 		_available = (lootAttachment - _unlocks - itemCargo _crate);
 		_available = _available - A3U_forbiddenItems;
 		_loot = selectRandom _available;
@@ -269,67 +272,67 @@ if (_crateAttachmentTypeMax != 0) then {
             Debug("No Attachment Left in Loot List");
 		}
 		else {
-			_amount = if (isNil "_crateAttachmentNum") then { crateAttachmentNumMax  call _fnc_pickAmount;} else {_crateAttachmentNum};
+			_amount = if (isNil "_crateAttachmentNum") then {crateAttachmentNumMax call _fnc_pickAmount;} else {_crateAttachmentNum};
 			_crate addItemCargoGlobal [_loot,_amount];
             Verbose_2("Spawning %1 of %2", _amount,_loot);
 		};
 	};
 };
 //Backpacks Loot
-if (_crateBackpackTypeMax != 0) then {
-	for "_i" from 0 to floor random _crateBackpackTypeMax do {
+if (_crateBackpackTypeMax != 0 && crateBackpackNumMax != 0) then {
+	for "_i" from 0 to ((floor (random (_crateBackpackTypeMax+1)))-1) do {
 		_available = (lootBackpack - _unlocks - itemCargo _crate - A3U_forbiddenItems);
 		_loot = selectRandom _available;
 		if (isNil "_loot") then {
             Debug("No Backpacks Left in Loot List");
 		}
 		else {
-			_amount = if (isNil "_crateBackpackNum") then {round random crateBackpackNumMax;} else {_crateBackpackNum};
+			_amount = if (isNil "_crateBackpackNum") then {crateBackpackNumMax call _fnc_pickAmount;} else {_crateBackpackNum};
 			_crate addBackpackCargoGlobal [_loot,_amount];
             Verbose_2("Spawning %1 of %2", _amount,_loot);
 		};
 	};
 };
 //Helmets Loot
-if (_crateHelmetTypeMax != 0) then {
-	for "_i" from 0 to floor random _crateHelmetTypeMax do {
+if (_crateHelmetTypeMax != 0 && crateHelmetNumMax != 0) then {
+	for "_i" from 0 to ((floor (random (_crateHelmetTypeMax+1)))-1) do {
 		_available = (lootHelmet - _unlocks - itemCargo _crate - A3U_forbiddenItems);
 		_loot = selectRandom _available;
 		if (isNil "_loot") then {
             Debug("No Helmets Left in Loot List");
 		}
 		else {
-			_amount = if (isNil "_crateHelmetNum") then { round random crateHelmetNumMax;} else {_crateHelmetNum};
+			_amount = if (isNil "_crateHelmetNum") then {crateHelmetNumMax call _fnc_pickAmount;} else {_crateHelmetNum};
 			_crate addItemCargoGlobal [_loot,_amount];
             Verbose_2("Spawning %1 of %2", _amount,_loot);
 		};
 	};
 };
 //Vests Loot
-if (_crateVestTypeMax != 0) then {
-	for "_i" from 0 to floor random _crateVestTypeMax do {
+if (_crateVestTypeMax != 0 && crateVestNumMax != 0) then {
+	for "_i" from 0 to ((floor (random (_crateVestTypeMax+1)))-1) do {
 		_available = (lootVest - _unlocks - itemCargo _crate - A3U_forbiddenItems);
 		_loot = selectRandom _available;
 		if (isNil "_loot") then {
             Debug("No Vests Left in Loot List");
 		}
 		else {
-			_amount = if (isNil "_crateVestNum") then { round random crateVestNumMax;} else {_crateVestNum};
+			_amount = if (isNil "_crateVestNum") then {crateVestNumMax call _fnc_pickAmount;} else {_crateVestNum};
 			_crate addItemCargoGlobal [_loot,_amount];
             Verbose_2("Spawning %1 of %2", _amount,_loot);
 		};
 	};
 };
 //Device Loot
-if (_crateDeviceTypeMax != 0) then {
-	for "_i" from 0 to floor random _crateDeviceTypeMax do {
+if (_crateDeviceTypeMax != 0 && crateDeviceNumMax != 0) then {
+	for "_i" from 0 to ((floor (random (_crateDeviceTypeMax+1)))-1) do {
 		_available = (lootDevice - _unlocks - itemCargo _crate - A3U_forbiddenItems);
 		_loot = selectRandom _available;
 		if (isNil "_loot") then {
             Debug("No Device Bags Left in Loot List");
 		}
 		else {
-			_amount = if (isNil "_crateDeviceNum") then { round random crateDeviceNumMax;} else {_crateDeviceNum};
+			_amount = if (isNil "_crateDeviceNum") then {crateDeviceNumMax call _fnc_pickAmount;} else {_crateDeviceNum};
 			_crate addBackpackCargoGlobal [_loot,_amount];
             Verbose_2("Spawning %1 of %2", _amount,_loot);
 		};

@@ -20,8 +20,11 @@ if (_hrT < 0) then {_hrT = 0};
 if (_resourcesFIAT < 0) then {_resourcesFIAT = 0};
 
 if (limitHR != 0) then {
-	_hrLimit = (((tierWar * 100) * (limitHR / 100)) + 100);
-	if (_hrT > _hrLimit) then {_hrT = _hrLimit};
+	
+	_hrLimit = ((tierWar * 2) + 10);
+	if (_hrT > _hrLimit) then {
+		_hrT = _hrLimit;
+	};
 };
 
 server setVariable ["hr",_hrT,true];

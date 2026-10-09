@@ -5,7 +5,7 @@ params ["_unitType"];
 
 private _hr = server getVariable "hr";
 
-if (_hr < 1) exitWith {
+if (_hr < 1 || ((_hr < 2) && (loseHROnDeath > 0))) exitWith {
 	[localize "STR_garrison_garrison_header", localize "STR_garrison_error_no_hr", localize "STR_notifiers_fail_type"] call SCRT_fnc_ui_showDynamicTextMessage;
 };
 

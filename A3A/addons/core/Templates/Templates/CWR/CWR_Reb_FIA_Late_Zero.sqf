@@ -8,7 +8,7 @@
 ["flagTexture", "cwr3\general\cwr3_flags\data\fia.paa"] call _fnc_saveToTemplate;
 ["flagMarkerType", "cwr3_faction_fia"] call _fnc_saveToTemplate;
 
-["vehiclesBasic", ["cwr3_i_landrover"]] call _fnc_saveToTemplate;
+["vehiclesBasic", ["cwr3_i_landrover", "CUP_C_Datsun_4seat"]] call _fnc_saveToTemplate;
 ["vehiclesLightUnarmed", ["CUP_B_nM1038_4s_USA_WDL", "CUP_B_nM1025_Unarmed_USMC_WDL", "CUP_B_M113A1_HQ_USA", "CUP_B_AAV_Unarmed_USMC"]] call _fnc_saveToTemplate;
 ["vehiclesLightArmed", ["CUP_B_nM1025_SOV_M2_USMC_WDL", "CUP_B_M113A1_USA", "CUP_B_AAV_USMC"]] call _fnc_saveToTemplate;
 ["vehiclesTruck", ["cwr3_b_usmc_m939_open","cwr3_o_ural_open"]] call _fnc_saveToTemplate;
@@ -21,7 +21,7 @@
 ["vehiclesMedical", ["CUP_B_nM997_USMC_WDL", "CUP_B_S1203_Ambulance_CDF"]] call _fnc_saveToTemplate;
 
 
-["vehiclesCivCar", ["cwr3_c_landrover_blue"]] call _fnc_saveToTemplate;
+["vehiclesCivCar", ["cwr3_c_landrover_blue", "CUP_C_Datsun_Covered"]] call _fnc_saveToTemplate;
 ["vehiclesCivTruck", ["cwr3_c_ural_blue"]] call _fnc_saveToTemplate;
 ["vehiclesCivHeli", ["CUP_C_412"]] call _fnc_saveToTemplate;
 ["vehiclesCivBoat", ["C_Rubberboat"]] call _fnc_saveToTemplate;
